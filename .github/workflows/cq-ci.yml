@@ -8,7 +8,7 @@ on:
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: analyze
     runs-on: 'ubuntu-latest'
     permissions:
       security-events: write
@@ -37,16 +37,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-          # Add custom queries specific to Go, if desired
           queries: security-extended
 
-      # Build your Go application
       - name: Build Go application
         run: |
           go build ./...  # Build the entire project
