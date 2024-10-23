@@ -1,8 +1,8 @@
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   container:
@@ -28,6 +28,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Build and Push to Multiple Registries
         uses: docker/build-push-action@v6.9.0
         with:
@@ -35,5 +43,7 @@ jobs:
           file: ./dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.actor }}/crud1:latest
-            docker.io/${{ github.actor }}/crud1:latest
+            ghcr.io/${{ github.repository }}:latest
+            docker.io/${{ github.actor }}/${{ github.repository }}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
