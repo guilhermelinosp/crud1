@@ -39,9 +39,25 @@ func Info(message string, tags ...zap.Field) {
 	_ = log.Sync()
 }
 
+func Debug(message string, tags ...zap.Field) {
+	log.Debug(message, tags...)
+	_ = log.Sync()
+}
+
+func Warn(message string, tags ...zap.Field) {
+	log.Warn(message, tags...)
+	_ = log.Sync()
+}
+
 func Error(message string, err error, tags ...zap.Field) {
 	tags = append(tags, zap.NamedError("error", err))
 	log.Error(message, tags...)
+	_ = log.Sync()
+}
+
+func Fatal(message string, err error, tags ...zap.Field) {
+	tags = append(tags, zap.NamedError("error", err))
+	log.Fatal(message, tags...)
 	_ = log.Sync()
 }
 
@@ -64,6 +80,30 @@ func getLogLevel() zapcore.Level {
 		return zapcore.WarnLevel
 	case "error":
 		return zapcore.ErrorLevel
+	case "fatal":
+		return zapcore.FatalLevel
+	default:
+		return zapcore.InfoLevel
+	}
+}
+
+// SetLogLevel dynamically changes the log level at runtime
+func SetLogLevel(level string) {
+	logLevel := getLogLevelFromString(level)
+	logConfig := zap.NewAtomicLevelAt(logLevel)
+	logConfig.SetLevel(logLevel)
+}
+
+func getLogLevelFromString(level string) zapcore.Level {
+	switch strings.ToLower(level) {
+	case "debug":
+		return zapcore.DebugLevel
+	case "warn":
+		return zapcore.WarnLevel
+	case "error":
+		return zapcore.ErrorLevel
+	case "fatal":
+		return zapcore.FatalLevel
 	default:
 		return zapcore.InfoLevel
 	}
