@@ -1,11 +1,23 @@
 version: 2
 updates:
-  - package-ecosystem: "gomod" # Specifies Go modules as the package ecosystem
-    directory: "/"               # Location of the Go module files (e.g., go.mod)
+  - package-ecosystem: "gomod"
+    directory: "/"
     schedule:
-      interval: "weekly"         # Update frequency (can be daily, weekly, or monthly)
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    assignees:
+      - guilhermelinosp
+    labels:
+      - dependencies
+      - gomod
 
   - package-ecosystem: "github-actions"
-    directory: "/"               # Location of the Go module files (e.g., go.mod)
+    directory: "/"
     schedule:
-      interval: "weekly"   
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    assignees:
+      - guilhermelinosp
+    labels:
+      - dependencies
+      - github-actions
